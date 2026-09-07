@@ -20,7 +20,7 @@ class User(Base):
     )
 
     posts: Mapped[list["Post"]] = relationship(  # noqa: F821
-        back_populates="author", cascade="all, delete-orphans"
+        back_populates="author", cascade="all, delete-orphan"
     )
 
     def __str__(self):
