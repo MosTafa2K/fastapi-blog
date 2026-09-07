@@ -28,7 +28,7 @@ class Post(Base):
     )
 
     author: Mapped["User"] = relationship(back_populates="posts")  # noqa
-    category: Mapped["Category" | None] = relationship(back_populates="posts")  # noqa
+    category: Mapped["Category | None"] = relationship(back_populates="posts")  # noqa
 
     def __str__(self):
         return self.title
