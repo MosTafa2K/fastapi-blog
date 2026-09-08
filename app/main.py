@@ -1,6 +1,8 @@
-def main():
-    print("Hello from fastapi-blog!")
+from fastapi import FastAPI
+
+from app.api.auth import router as auth_router
+
+app = FastAPI(title="FastAPI Blog")
 
 
-if __name__ == "__main__":
-    main()
+app.include_router(auth_router)
