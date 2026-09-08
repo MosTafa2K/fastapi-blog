@@ -9,7 +9,7 @@ from app.core.security import create_access_token, hash_password, verify_passwor
 from app.db.session import get_db
 from app.exceptions import ConflictError, InvalidUsernameOrPassword
 from app.models.user import User
-from app.schemas.user import UserCreate, UserResponse
+from app.schemas.user import TokenResponse, UserCreate, UserResponse
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -41,7 +41,7 @@ async def register_user(
     return user
 
 
-@router.post("/login")
+@router.post("/login", response_model=TokenResponse)
 async def login_user(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: Annotated[AsyncSession, Depends(get_db)],
