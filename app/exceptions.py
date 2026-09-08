@@ -10,7 +10,7 @@ class InvalidCredentials(HTTPException):
         )
 
 
-class ConfilictError(HTTPException):
+class ConflictError(HTTPException):
     def __init__(self):
         super().__init__(
             status_code=status.HTTP_409_CONFLICT,
