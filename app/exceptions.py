@@ -32,3 +32,11 @@ class CategoryNotFound(HTTPException):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=f"Category '{category_id}' not found",
         )
+
+
+class PostNotFound(HTTPException):
+    def __init__(self, post_id: int):
+        super().__init__(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Post '{post_id}' not found",
+        )

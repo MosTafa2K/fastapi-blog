@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_db
 from app.dependencies.auth import get_current_user
-from app.exceptions import CategoryNotFound
+from app.exceptions import CategoryNotFound, PostNotFound
 from app.models.category import Category
 from app.models.post import Post
 from app.models.user import User
@@ -65,10 +65,7 @@ async def get_post(post_id: int, db: Annotated[AsyncSession, Depends(get_db)]):
     post: Post | None = result.scalar_one_or_none()
     print(post)
     if post is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Post {post_id} not found",
-        )
+        raise PostNotFound(post_id)
     return post
 
 
@@ -83,10 +80,7 @@ async def update_post(
     result = await db.execute(select(Post).where(Post.id == post_id))
     post: Post | None = result.scalar_one_or_none()
     if post is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Post {post_id} not found",
-        )
+        raise PostNotFound(post_id)
     if post.author_id != current_user.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -110,10 +104,7 @@ async def delete_post(
     result = await db.execute(select(Post).where(Post.id == post_id))
     post: Post | None = result.scalar_one_or_none()
     if post is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Post {post_id} not found",
-        )
+        raise PostNotFound(post_id)
     if post.author_id != current_user.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
