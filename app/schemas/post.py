@@ -1,12 +1,12 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class PostBase(BaseModel):
     title: str
     content: str
-    category_id: int | None = None
+    category_id: int | None = Field(default=None, gt=0)
 
 
 class PostCreate(PostBase):
