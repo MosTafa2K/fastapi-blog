@@ -24,3 +24,11 @@ class InvalidUsernameOrPassword(HTTPException):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid username or password",
         )
+
+
+class CategoryNotFound(HTTPException):
+    def __init__(self, category_id: int):
+        super().__init__(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Category '{category_id}' not found",
+        )

@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_db
 from app.dependencies.auth import get_current_user
+from app.exceptions import CategoryNotFound
 from app.models.category import Category
 from app.models.post import Post
 from app.models.user import User
@@ -42,10 +43,7 @@ async def create_post(
             select(Category).where(Category.id == data.category_id)
         )
         if not result.scalar_one():
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Category not found",
-            )
+            raise CategoryNotFound(data.category_id)
 
     post = Post(
         title=data.title,
