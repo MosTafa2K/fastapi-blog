@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_db
 from app.dependencies.auth import get_current_user
+from app.models.category import Category
 from app.models.post import Post
 from app.models.user import User
 from app.schemas.post import PostCreate, PostResponse, PostUpdate
@@ -18,17 +19,15 @@ async def list_posts(
     db: Annotated[AsyncSession, Depends(get_db)],
     limit: Annotated[int, Query(ge=0)] = 10,
     skip: Annotated[int, Query(ge=0, le=100)] = 0,
+    category_id: int | None = None,
 ):
     """List all posts with pagination."""
-    posts = await db.execute(
-        select(Post)
-        .limit(limit)
-        .offset(skip)
-        .order_by(
-            Post.created_at.desc(),
-        ),
-    )
-    return posts.scalars().all()
+    query = select(Post)
+    if category_id:
+        query = query.where(Post.category_id == category_id)
+    query = query.order_by(Post.created_at.desc()).limit(limit).offset(skip)
+    result = await db.execute(query)
+    return result.scalars().all()
 
 
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=PostResponse)
@@ -38,6 +37,16 @@ async def create_post(
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
     """Create a new post."""
+    if data.category_id:
+        result = await db.execute(
+            select(Category).where(Category.id == data.category_id)
+        )
+        if not result.scalar_one():
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Category not found",
+            )
+
     post = Post(
         title=data.title,
         slug=data.title.lower().replace(" ", "-"),
