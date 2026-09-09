@@ -5,6 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_db
+from app.exceptions import CategoryNotFound
 from app.models.category import Category
 from app.schemas.category import CategoryCreate, CategoryResponse
 
@@ -46,10 +47,7 @@ async def update_category(
     result = await db.execute(select(Category).where(Category.id == category_id))
     category = result.scalar_one_or_none()
     if not category:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Category with id {category_id} not found!",
-        )
+        raise CategoryNotFound(category_id)
     category.name = data.name
     await db.commit()
     await db.refresh(category)
@@ -65,9 +63,6 @@ async def delete_category(
     result = await db.execute(select(Category).where(Category.id == category_id))
     category = result.scalar_one_or_none()
     if not category:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Category with id {category_id} not found!",
-        )
+        raise CategoryNotFound(category_id)
     await db.delete(category)
     await db.commit()
