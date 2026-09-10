@@ -30,3 +30,8 @@ dev = [
 [[tool.uv.index]]
 url = "https://package-mirror.liara.ir/repository/pypi/simple"
 default = true
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore:The anyio\\.abc\\.BlockingPortal alias is deprecated:DeprecationWarning",
+]
