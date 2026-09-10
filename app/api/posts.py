@@ -42,7 +42,8 @@ async def create_post(
         result = await db.execute(
             select(Category).where(Category.id == data.category_id)
         )
-        if not result.scalar_one():
+        category = result.scalar_one_or_none()
+        if not category:
             raise CategoryNotFound(data.category_id)
 
     post = Post(
