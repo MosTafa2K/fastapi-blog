@@ -11,13 +11,15 @@ from app.db.session import get_db
 from app.exceptions import InvalidCredentials
 from app.models.user import User
 
-oauth2_schem = OAuth2PasswordBearer(tokenUrl="/auth/login")
+oauth2_schem = OAuth2PasswordBearer(tokenUrl="/auth/login", auto_error=False)
 
 
-async def get_current_user(
-    token: Annotated[str, Depends(oauth2_schem)],
+async def get_optional_current_user(
+    token: Annotated[str | None, Depends(oauth2_schem)],
     db: Annotated[AsyncSession, Depends(get_db)],
-) -> User:
+) -> User | None:
+    if token is None:
+        return None
     try:
         payload = jwt.decode(
             token,
