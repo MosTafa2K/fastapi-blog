@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_db
-from app.dependencies.auth import get_optional_current_user
+from app.dependencies.auth import required_current_user
 from app.exceptions import CategoryNotFound, PostNotFound
 from app.models.category import Category
 from app.models.post import Post
@@ -34,7 +34,7 @@ async def list_posts(
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=PostResponse)
 async def create_post(
     data: PostCreate,
-    current_user: Annotated[User, Depends(get_optional_current_user)],
+    current_user: Annotated[User, Depends(required_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
     """Create a new post."""
@@ -74,7 +74,7 @@ async def get_post(post_id: int, db: Annotated[AsyncSession, Depends(get_db)]):
 async def update_post(
     post_id: int,
     data: PostUpdate,
-    current_user: Annotated[User, Depends(get_optional_current_user)],
+    current_user: Annotated[User, Depends(required_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
     """Update a post by its ID. Only the author of the post can update it."""
@@ -98,7 +98,7 @@ async def update_post(
 @router.delete("/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_post(
     post_id: int,
-    current_user: Annotated[User, Depends(get_optional_current_user)],
+    current_user: Annotated[User, Depends(required_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
     """Delete a post by its ID. Only the author of the post can delete it."""
