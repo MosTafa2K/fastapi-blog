@@ -34,3 +34,11 @@ async def get_optional_current_user(
     if user is None:
         raise InvalidCredentials
     return user
+
+
+async def required_current_user(
+    current_user: Annotated[User | None, Depends(get_optional_current_user)]
+):
+    if current_user is None:
+        raise InvalidCredentials
+    return current_user
