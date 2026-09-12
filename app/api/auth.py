@@ -63,3 +63,8 @@ async def login_user(
         "access_token": token,
         "token_type": "bearer",
     }
+
+
+@router.get("/me", status_code=status.HTTP_200_OK, response_model=UserResponse)
+async def get_me(current_user: Annotated[User, Depends(required_current_user)]):
+    return current_user
