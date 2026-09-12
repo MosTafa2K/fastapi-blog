@@ -1,12 +1,13 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import create_access_token, hash_password, verify_password
 from app.db.session import get_db
+from app.dependencies.auth import get_optional_current_user, required_current_user
 from app.exceptions import ConflictError, InvalidUsernameOrPassword
 from app.models.user import User
 from app.schemas.user import TokenResponse, UserCreate, UserResponse
@@ -22,7 +23,13 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 async def register_user(
     data: UserCreate,
     db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User | None, Depends(get_optional_current_user)],
 ):
+    if current_user is not None:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Authenticated user cannot register!",
+        )
     result = await db.execute(
         select(User).where(
             (User.username == data.username) | (User.email == data.email)
