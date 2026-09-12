@@ -1,6 +1,7 @@
 import os
 
 import pytest_asyncio
+from fastapi import status
 from httpx2 import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
@@ -71,3 +72,31 @@ async def client(db_session):
         yield client
 
     app.dependency_overrides.clear()
+
+
+@pytest_asyncio.fixture
+async def auth_headers(client: AsyncClient) -> dict[str, str]:
+    await client.post(
+        "/auth/register",
+        json={
+            "username": "user1",
+            "password": "user1password",
+            "email": "user1@email.com",
+        },
+    )
+
+    response = await client.post(
+        "/auth/login",
+        data={
+            "username": "user1",
+            "password": "user1password",
+        },
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+
+    token = response.json()["access_token"]
+
+    return {
+        "Authorization": f"Bearer {token}",
+    }
