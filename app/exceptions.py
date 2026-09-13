@@ -29,7 +29,7 @@ class InvalidUsernameOrPassword(HTTPException):
 class CategoryNotFound(HTTPException):
     def __init__(self, category_id: int):
         super().__init__(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Category '{category_id}' not found",
         )
 
@@ -37,6 +37,6 @@ class CategoryNotFound(HTTPException):
 class PostNotFound(HTTPException):
     def __init__(self, post_id: int):
         super().__init__(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Post '{post_id}' not found",
         )
