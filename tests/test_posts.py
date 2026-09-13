@@ -71,7 +71,7 @@ async def test_get_post_by_id(
 
 @pytest.mark.asyncio
 async def test_not_exists_post(client: AsyncClient):
-    """ Test that retrieving a non-existent post returns a 404 error."""
+    """Test that retrieving a non-existent post returns a 404 error."""
     response = await client.get("/posts/10000")
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
@@ -81,6 +81,7 @@ async def test_update_post(
     client: AsyncClient,
     auth_headers: dict[str, str],  # noqa
 ):
+    """Test updating a post with valid authentication and ownership."""
     post_response = await client.post(
         "/posts",
         json={
@@ -108,6 +109,7 @@ async def test_user_cannot_update_other_users_post(
     client: AsyncClient,
     auth_headers: dict[str, str],  # noqa
 ):
+    """Test that a user cannot update another user's post."""
     create_post_response = await client.post(
         "/posts",
         json={
@@ -150,6 +152,7 @@ async def test_user_cannot_delete_other_users_post(
     client: AsyncClient,
     auth_headers: dict[str, str],  # noqa
 ):
+    """Test that a user cannot delete another user's post."""
     create_post_response = await client.post(
         "/posts",
         json={
