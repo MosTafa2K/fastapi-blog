@@ -70,6 +70,13 @@ async def test_get_post_by_id(
 
 
 @pytest.mark.asyncio
+async def test_not_exists_post(client: AsyncClient):
+    """ Test that retrieving a non-existent post returns a 404 error."""
+    response = await client.get("/posts/10000")
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+@pytest.mark.asyncio
 async def test_update_post(
     client: AsyncClient,
     auth_headers: dict[str, str],  # noqa
