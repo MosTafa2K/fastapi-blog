@@ -35,3 +35,13 @@ default = true
 filterwarnings = [
     "ignore:The anyio\\.abc\\.BlockingPortal alias is deprecated:DeprecationWarning",
 ]
+
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["app"]
+
+[tool.coverage.report]
+show_missing = true
+exclude_lines = ["pragma: no cover"]
