@@ -24,7 +24,7 @@ async def list_posts(
 ):
     """List all posts with pagination."""
     query = select(Post)
-    if category_id:
+    if category_id is not None:
         query = query.where(Post.category_id == category_id)
     query = query.order_by(Post.created_at.desc()).limit(limit).offset(skip)
     result = await db.execute(query)
