@@ -29,6 +29,10 @@ class Post(Base):
 
     author: Mapped["User"] = relationship(back_populates="posts")  # noqa
     category: Mapped["Category | None"] = relationship(back_populates="posts")  # noqa
+    comments: Mapped[list["Comment"]] = relationship(  # noqa: F821
+        back_populates="post",
+        cascade="all, delete-orphan",
+    )
 
     def __str__(self):
         return self.title

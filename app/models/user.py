@@ -22,6 +22,10 @@ class User(Base):
     posts: Mapped[list["Post"]] = relationship(  # noqa: F821
         back_populates="author", cascade="all, delete-orphan"
     )
+    comments: Mapped[list["Comment"]] = relationship(  # noqa: F821
+        back_populates="post",
+        cascade="all, delete-orphan",
+    )
 
     def __str__(self):
         return self.username or self.email
