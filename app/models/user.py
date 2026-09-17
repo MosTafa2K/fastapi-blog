@@ -23,7 +23,7 @@ class User(Base):
         back_populates="author", cascade="all, delete-orphan"
     )
     comments: Mapped[list["Comment"]] = relationship(  # noqa: F821
-        back_populates="post",
+        back_populates="author",
         cascade="all, delete-orphan",
     )
 
