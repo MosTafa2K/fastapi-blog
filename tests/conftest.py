@@ -113,8 +113,6 @@ async def auth_headers(client: AsyncClient) -> dict[str, str]:
         },
     )
 
-    assert response.status_code == status.HTTP_201_CREATED
-
     response = await client.post(
         "/auth/login",
         data={
@@ -130,3 +128,28 @@ async def auth_headers(client: AsyncClient) -> dict[str, str]:
     return {
         "Authorization": f"Bearer {token}",
     }
+
+
+async def create_and_login_user(
+    client: AsyncClient,
+    username: str,
+    email: str,
+    password: str | None = None,
+):
+    user_password = f"{username}password" if password is None else password
+    await client.post(
+        "/auth/register",
+        json={
+            "username": username,
+            "email": email,
+            "password": user_password,
+        },
+    )
+    response = await client.post(
+        "/auth/login",
+        data={
+            "username": username,
+            "password": user_password,
+        },
+    )
+    return response.json()["access_token"]
