@@ -67,7 +67,7 @@ async def update_comment(
     query = await db.execute(
         select(Comment).where(
             Comment.id == comment_id,
-            Post.id == post_id,
+            Comment.post_id == post_id,
         )
     )
     comment = query.scalar_one_or_none()
@@ -94,7 +94,7 @@ async def delete_comment(
     query = await db.execute(
         select(Comment).where(
             Comment.id == comment_id,
-            Post.id == post_id,
+            Comment.post_id == post_id,
         )
     )
     comment = query.scalar_one_or_none()
