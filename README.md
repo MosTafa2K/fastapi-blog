@@ -1,6 +1,6 @@
 # FastAPI Blog API
 
-A simple and production-oriented Blog REST API built with **FastAPI**, **Async SQLAlchemy**, and **PostgreSQL**.
+A simple Blog REST API built with **FastAPI**, **Async SQLAlchemy**, and **PostgreSQL**.
 
 The project includes JWT authentication, post and category management, comments, ownership-based authorization, database migrations, automated tests, and an isolated test database.
 
